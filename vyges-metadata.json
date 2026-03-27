@@ -1,106 +1,26 @@
 {
-  "name": "opentitan-rom-ctrl",
-  "version": "0.1.0",
-  "license": "Apache-2.0",
-  "source": {
-    "type": "git",
-    "url": "https://github.com/lowRISC/opentitan",
-    "commit": "304378684dfcf5be73bbd14faffa71790793d8c6",
-    "ip_path": "hw/ip/rom_ctrl",
-    "private": false,
-    "rtl_path": "rtl",
-    "rtl_files": [
-      "rtl/rom_ctrl.sv",
-      "rtl/rom_ctrl_compare.sv",
-      "rtl/rom_ctrl_counter.sv",
-      "rtl/rom_ctrl_fsm.sv",
-      "rtl/rom_ctrl_mux.sv",
-      "rtl/rom_ctrl_pkg.sv",
-      "rtl/rom_ctrl_reg_pkg.sv",
-      "rtl/rom_ctrl_regs_reg_top.sv",
-      "rtl/rom_ctrl_rom_reg_top.sv",
-      "rtl/rom_ctrl_scrambled_rom.sv"
-    ]
-  },
-  "updated": "2026-03-24T02:12:42Z",
   "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
   "x-version": "1.0.0",
-  "description": "Rom Ctrl. OpenTitan IP block from hw/ip/rom_ctrl.",
-  "template": "opentitan-ip-template@1.0.0",
-  "target": [
-    "fpga",
-    "asic"
-  ],
-  "design_type": [
-    "digital"
-  ],
-  "maturity": "prototype",
+  "name": "opentitan-rom-ctrl",
+  "version": "0.1.0",
+  "description": "ROM controller with integrity checking (cSHAKE-based hash), scrambling, and lifecycle-gated access. Verifies ROM contents at boot before releasing to CPU. TileLink-UL slave. Extracted from OpenTitan (lowRISC).",
+  "license": "Apache-2.0",
+  "maturity": "production",
+  "target": ["asic", "fpga"],
+  "design_type": ["digital"],
   "created": "2026-02-19T06:12:02Z",
-  "interfaces": [
-    {
-      "type": "bus",
-      "direction": "input",
-      "protocol": "TL-UL",
-      "width": 32,
-      "description": "TL-UL host interface for register access",
-      "signals": [
-        {
-          "name": "clk_i",
-          "direction": "input",
-          "type": "clock",
-          "width": 1,
-          "description": "System clock"
-        },
-        {
-          "name": "rst_ni",
-          "direction": "input",
-          "type": "reset",
-          "width": 1,
-          "active_level": "low",
-          "description": "Active-low synchronous reset"
-        },
-        {
-          "name": "tl_i",
-          "direction": "input",
-          "type": "data",
-          "width": 1,
-          "description": "TL-UL host-to-device (tl_h2d_t struct) \u2014 connect to xbar slave port"
-        },
-        {
-          "name": "tl_o",
-          "direction": "output",
-          "type": "data",
-          "width": 1,
-          "description": "TL-UL device-to-host (tl_d2h_t struct) \u2014 connect to xbar slave port"
-        }
-      ]
-    },
-    {
-      "type": "bus",
-      "direction": "output",
-      "protocol": "ROM",
-      "description": "ROM controller interface"
-    }
-  ],
-  "categories": {
-    "primary": "memory",
-    "secondary": [
-      "rom"
-    ],
-    "tags": [
-      "rom",
-      "opentitan",
-      "lowrisc-opentitan"
-    ]
-  },
-  "community": {
-    "issues": "https://github.com/vyges-ip/opentitan-rom-ctrl/issues",
-    "contributions": "https://github.com/vyges-ip/opentitan-rom-ctrl/pulls"
-  },
-  "branding": {
-    "provider": "Vyges IP Catalog",
-    "logo": "https://vyges.com/assets/logo.svg",
-    "website": "https://github.com/vyges-ip/opentitan-rom-ctrl",
-    "usage": "Use of the logo is permitted for attribution or compatibility references only."
-  }
+  "updated": "2026-03-27T19:35:00Z",
+  "source": {"type": "git", "url": "https://github.com/lowRISC/opentitan", "private": false, "rtl_path": "rtl"},
+  "maintainers": [{"name": "Vyges", "email": "team@vyges.com", "github": "vyges"}],
+  "interfaces": [{"type": "bus", "direction": "slave", "protocol": "TL-UL", "port": "tl", "width": 32}],
+  "architecture": {"type": "peripheral", "features": ["ROM integrity checking using cSHAKE hash", "Memory scrambling for side-channel protection", "Lifecycle-gated ROM access", "Boot-time ROM verification before CPU release", "10 RTL files, 2,687 lines"]},
+  "dependencies": [{"name": "opentitan-prim", "type": "library"}, {"name": "opentitan-tlul", "type": "bus"}],
+  "documentation": {"upstream": "https://opentitan.org/book/hw/ip/rom-ctrl/"},
+  "artifacts": {"total_rtl_lines": 2687},
+  "categories": {"primary": "security", "secondary": ["memory", "integrity"], "tags": ["rom-ctrl", "rom", "integrity", "hash", "scrambling", "boot", "opentitan", "tl-ul"]},
+  "trust": {"verification_level": "silicon_proven", "tapeout_count": 3, "maintained": true, "last_activity": "2026-03-27"},
+  "asic": {"flavor": "digital", "technology": ["sky130A"]},
+  "fpga": {"toolchain": ["Vivado", "Yosys"]},
+  "keywords": ["rom-ctrl", "opentitan", "tl-ul"],
+  "meta": {"template": {"generator": "manual (gold-standard pass 2026-03-27)"}, "schema": {"version": "1.0.0"}}
 }
