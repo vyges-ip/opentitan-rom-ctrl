@@ -14,7 +14,7 @@
     "digital"
   ],
   "created": "2026-03-27T23:05:46Z",
-  "updated": "2026-03-27T23:05:46Z",
+  "updated": "2026-04-02T03:11:53Z",
   "source": {
     "type": "git",
     "url": "https://github.com/lowRISC/opentitan",
@@ -270,5 +270,30 @@
     "schema": {
       "version": "1.0.0"
     }
-  }
+  },
+  "rtl_files": [
+    "rtl/rom_ctrl.sv",
+    "rtl/rom_ctrl_compare.sv",
+    "rtl/rom_ctrl_counter.sv",
+    "rtl/rom_ctrl_fsm.sv",
+    "rtl/rom_ctrl_mux.sv",
+    "rtl/rom_ctrl_pkg.sv",
+    "rtl/rom_ctrl_reg_pkg.sv",
+    "rtl/rom_ctrl_regs_reg_top.sv",
+    "rtl/rom_ctrl_rom_reg_top.sv",
+    "rtl/rom_ctrl_scrambled_rom.sv"
+  ],
+  "rtl_quality": {
+    "module_prefixed": true,
+    "defines_prefixed": true,
+    "header_guards": false,
+    "one_module_per_file": true,
+    "self_contained_includes": false,
+    "no_translate_pragmas": true,
+    "lint_clean": false,
+    "no_casex": true,
+    "width_clean": false,
+    "no_sv_keyword_conflicts": true
+  },
+  "defines": []
 }
