@@ -122,7 +122,9 @@ module rom_ctrl_regs_reg_top (
   // Format: <reg>_<field>_{wd|we|qs}
   //        or <reg>_{wd|we|qs} if field == 1 or 0
   logic alert_test_we;
-  logic alert_test_wd;
+  logic alert_test_fatal_wd;
+  logic alert_test_regwen_qs;
+  logic alert_test_regwen_wd;
   logic fatal_alert_cause_checker_error_qs;
   logic fatal_alert_cause_integrity_error_qs;
   logic [31:0] digest_0_qs;
@@ -145,14 +147,18 @@ module rom_ctrl_regs_reg_top (
   // Register instances
   // R[alert_test]: V(True)
   logic alert_test_qe;
-  logic [0:0] alert_test_flds_we;
+  logic [1:0] alert_test_flds_we;
   assign alert_test_qe = &alert_test_flds_we;
+  // Create REGWEN-gated WE signal
+  logic alert_test_gated_we;
+  assign alert_test_gated_we = alert_test_we && alert_test_regwen_qs;
+  //   F[fatal]: 0:0
   prim_subreg_ext #(
     .DW    (1)
-  ) u_alert_test (
+  ) u_alert_test_fatal (
     .re     (1'b0),
-    .we     (alert_test_we),
-    .wd     (alert_test_wd),
+    .we     (alert_test_gated_we),
+    .wd     (alert_test_fatal_wd),
     .d      ('0),
     .qre    (),
     .qe     (alert_test_flds_we[0]),
@@ -161,6 +167,34 @@ module rom_ctrl_regs_reg_top (
     .qs     ()
   );
   assign reg2hw.alert_test.qe = alert_test_qe;
+
+  //   F[regwen]: 31:31
+  prim_subreg #(
+    .DW      (1),
+    .SwAccess(prim_subreg_pkg::SwAccessW0C),
+    .RESVAL  (1'h1),
+    .Mubi    (1'b0)
+  ) u_alert_test_regwen (
+    .clk_i   (clk_i),
+    .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
+
+    // from register interface
+    .we     (alert_test_we),
+    .wd     (alert_test_regwen_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0),
+
+    // to internal hardware
+    .qe     (alert_test_flds_we[1]),
+    .q      (),
+    .ds     (),
+
+    // to register interface (read)
+    .qs     (alert_test_regwen_qs)
+  );
 
 
   // R[fatal_alert_cause]: V(False)
@@ -173,6 +207,7 @@ module rom_ctrl_regs_reg_top (
   ) u_fatal_alert_cause_checker_error (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -200,6 +235,7 @@ module rom_ctrl_regs_reg_top (
   ) u_fatal_alert_cause_integrity_error (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -229,6 +265,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_0 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -258,6 +295,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_1 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -287,6 +325,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_2 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -316,6 +355,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_3 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -345,6 +385,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_4 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -374,6 +415,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_5 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -403,6 +445,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_6 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -432,6 +475,7 @@ module rom_ctrl_regs_reg_top (
   ) u_digest_7 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -461,6 +505,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_0 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -490,6 +535,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_1 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -519,6 +565,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_2 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -548,6 +595,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_3 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -577,6 +625,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_4 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -606,6 +655,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_5 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -635,6 +685,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_6 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -664,6 +715,7 @@ module rom_ctrl_regs_reg_top (
   ) u_exp_digest_7 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -734,7 +786,9 @@ module rom_ctrl_regs_reg_top (
   // Generate write-enables
   assign alert_test_we = addr_hit[0] & reg_we & !reg_error;
 
-  assign alert_test_wd = reg_wdata[0];
+  assign alert_test_fatal_wd = reg_wdata[0];
+
+  assign alert_test_regwen_wd = reg_wdata[31];
 
   // Assign write-enables to checker logic vector.
   always_comb begin
@@ -764,6 +818,7 @@ module rom_ctrl_regs_reg_top (
     unique case (1'b1)
       addr_hit[0]: begin
         reg_rdata_next[0] = '0;
+        reg_rdata_next[31] = alert_test_regwen_qs;
       end
 
       addr_hit[1]: begin
